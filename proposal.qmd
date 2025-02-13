@@ -1,0 +1,176 @@
+---
+title: "The Timeless Rivalry: Ronaldo vs Messi"
+subtitle: "An investigation tracking Messi and Ronaldo's performance trends"
+author: 
+  - name: "Mobolaji Adewale, Narasimha Vardhan Rachaputi, Pradnya Raut, Praveen Kumar Pappala, Tushar Kant Singh, Usama Ahmed"           
+    affiliations:
+      - name: "School of Information, University of Arizona"
+description: "Proposal for The Timeless Rivalry"
+format:
+  html:
+    code-tools: true
+    code-overflow: wrap
+    code-line-numbers: true
+    embed-resources: true
+    code-fold: true
+editor: visual
+code-annotations: hover
+execute:
+  warning: false
+---
+
+```{r}
+#| label: load-pkgs
+#| message: false
+library(tidyverse)
+if(!require("pacman"))
+  install.packages("pacman")
+
+pacman::p_load(tidyverse, gt)
+
+
+#Ronaldo dataset downloaded from https://www.kaggle.com/datasets/azminetoushikwasi/cr7-cristiano-ronaldo-all-club-goals-stats
+ronaldo <- read_csv("data/cr7.csv")
+
+
+#Messi dataset downloaded from https://www.kaggle.com/code/azminetoushikwasi/lionel-messi-extended-eda-goals/input?select=messi.csv
+messi <- read_csv("data/messi.csv")
+```
+
+#### **Our High Level Goal**
+
+To compare and contrast the performances of Cristiano Ronaldo and Lionel Messi, only, over time and space (season / country respectively), primarily via geographical plots
+
+::: {style="display: flex; margin-left: auto; margin-right: auto;"}
+![Cristiano Ronaldo](data/Ronaldo_Img.jpg){style="flex: 49%; float: left; padding-right: 10%;  text-align: center !important;" width="231"}
+
+![Lionel Messi](data/Messi_Img.jpg){style="flex: 49%;  float: right;  text-align: center !important;" width="307"}
+:::
+
+#### **Description**
+
+The datasets, compiled by Azmine Toushik Wasi and sourced from Kaggle, provides a detailed insight into the performances of two legendary footballers: Cristiano Ronaldo and Lionel Messi. These datasets offer a comprehensive view of their contributions across various seasons, competitions, matches, and events.
+
+-   `ronaldo.csv`: It has 13 variables such as season, competition, result, opponent etc. In total, it has 701 rows indicating the 701 goals scored by Cristiano Ronaldo up until 2022.
+
+-   `messi.csv`: It has the same 13 variables such as season, competition, result, opponent etc. In total, it has 698 rows indicating the 698 goals scored by Lionel Messi up until 2022.
+
+These datasets enable detailed analysis and insights into the goal-scoring abilities, match contributions, playing positions, and other crucial aspects of two of football's greatest players.
+
+#### **Why did we choose this dataset?**
+
+Ronaldo and Messi are two of the most iconic and celebrated footballers in the history of the sport. Their performances, achievements, and playing styles have demanded immense interest and attention from football fans worldwide. Since both Messi and Ronaldo have massive fanbases, there is a significant demand for analysis related to their performances. Analyzing these datasets and attempting an educated analysis facilitates a deeper understanding of their playing styles, strengths, and contributions to their respective teams.
+
+The rivalry between Ronaldo and Messi has transcended the football pitch, and this analysis is our attempt to honour the legacy of the two legends who inspired an entire generation to strive for excellence.
+
+#### **First Topic**
+
+##### Approach
+
+The first aim is to craft a side-by-side animation detailing the number of goals scored by both Ronaldo and Messi, plotted geographically over time. The plan is firstly to isolate the unique competitions the two players have participated in; gather the `countries` in which said competitions are hosted - via the creation of a new variable from literature searches to match competitions to their countries - and then; display said countries on a world map, and how they changed over seasons. The data of focus will be the `competitions`, a new variable detailing the `year` in which their goals were scored and a new variable detailing the `region` in which that competition took place. The time-frame will be from 2005 to 2022.
+
+The layers of the geographical maps will be the base map itself, of the world as until 2022 that is where their careers have been based, that will be followed be a `fill` layer denoting that goals were scored in a specific country. The side-by-side animation will use a different `fill` colour for the two players, but the same global theater, to make it clear where each player has scored during each season. The animation speed will be taken into account, selecting an option that is slow enough to allow for direct inference of data and patterns, and could (potentially) be crafted in a way to allow for pausing. The seasons will be the same for the two maps at any point in the animation: for instance, the 2019-2020 season will display a few seconds after the 2018-2019 season, with both graphs changing at the same time.
+
+As an aside: the two dataframes are of differing lengths due to the inclusion of additional seasons for Ronaldo - henceforth we have specified the timeframe to begin in the 2004-2005 season, as opposed to the 2002-2003 season. Also, it may be determined that an alternative display is crafted, potentially as a series of static side-by-side maps that follow each season, to allow those that are averse to animation to still be able to view the trend the data presents.
+
+##### Analysis
+
+The plots will preferably make use of `geom_sf`, to display maps of the globe that will be iterated via the `gganimate` package. To ensure that there is not an overload of information, the maps will probably be left without labels in their normal view, and may potentially add labels to countries that are highlighted as regions where goals were scored in a particular season. Context behind the difficulty of the goals may also be provided via the competitions variable: as certain competition levels are ranked as more difficult than others.
+
+These plots will allow for a contrasting of careers between Ronaldo and Messi, visually viewing where the two player's careers have taken them, and whether one or the other has consistently faced tougher competition throughout their careers. An argument could be made if such a trend does appear, that the player who has succeeded against tougher opposition may in fact be, the better player.
+
+#### **Second Topic**
+
+##### Approach
+
+The second target is to create an interactive map, giving details about a summary of the goals scored in each `country` by Ronaldo and Messi. It will allow for comparison and contrasting per country between the two players. A focus will be on highlighting the comparison between the number of `goals` scored by the two players in an individual region. The variables of focus will be a seasonal sum of the goals scored per `regions`. The time-frame will also be from 2005 to 2022.
+
+For the interactive map, the focus will again be global, due to the players being scrutinized. A proposed method of utilizing interactivity will be to allow for a viewer to select a country and view a bar-chart detailing the goals score by a player, or both if they both scored in that region. The implementation of the chart could take various forms, with the entirety of the 2005 to 2022 window being displayed on a single map, or an option allowing for the selection of discrete time windows to view their stats within: for example, comparing the goals scored in Italy by Ronaldo and/or Messi during the years 2005 to 2010.
+
+##### Analysis
+
+`geom_sf` will be once again employed to allow for a visualization of the globe, however `plotly` will be incorporated on this occasion, to craft a map that can be interacted with and explored for its values and insights. Within the interactive map, once a country is clicked - an internal plot will be displayed: a bar / column / line chart will display the goals scored within a country for both players, probably over a period spanning all the years.
+
+The map will allow for an analysis of the performances of Messi and Ronaldo in certain regions specifically, such as allowing one to compare or contrast the goals scored by the two in a region where they both decided to play football. This would enable a more direct comparison of the two players in specific leagues to discern whether one was consistently more impactful on games than the other - in regards to goals scored.
+
+#### **The Data**
+
+The dataset appears to contain information related to football matches, likely from a specific club or league. Here's a breakdown of the columns:
+
+| S.No. | Column Name        | Datatype  | Description                                                                           |
+|------------------|------------------|------------------|--------------------|
+| 1\.   | `Season`           | Character | Indicates the season of the competition in which the match took place                 |
+| 2\.   | `Competition`      | Character | Specifies the name or type of the competition (e.g., league, cup).                    |
+| 3\.   | `Matchday`         | Character | Indicates the matchday number within the competition.                                 |
+| 4\.   | `Date`             | Date      | Represents the date on which the match was played.                                    |
+| 5\.   | `Venue`            | Character | Specifies the location where the match was held.                                      |
+| 6\.   | `Club`             | Character | Refers to the name of the football club involved in the match.                        |
+| 7\.   | `Opponent`         | Character | Refers to the opposing team.                                                          |
+| 8\.   | `Result`           | Character | Indicates the outcome of the match, usually in terms of goals scored by each team.    |
+| 9\.   | `Playing_Position` | Character | Specifies the position played by the player.                                          |
+| 10\.  | `Minute`           | Integer   | Indicates the minute in which a particular event occurred (e.g., goal, substitution). |
+| 11\.  | `At_score`         | Character | Represents the score at the time of the event.                                        |
+| 12\.  | `Type`             | Character | Describes the type of event (e.g., goal, assist).                                     |
+| 13\.  | `Goal_assist`      | Character | Indicates the player who assisted in scoring the goal.                                |
+
+The new variable `Year` will be converted to a datetime object; `Minute` will be converted to Integer; `Season` will be converted to PosixCT
+
+No-Assist NAs will be replaced with "No Assists"
+
+#### **The Datasets**
+
+```{r}
+ronaldoTop <- head(ronaldo)
+messiTop <- head(messi)
+
+
+ronaldoTop %>%gt() %>%
+tab_header(title = md("**Cristiano Ronaldo**")) %>%
+  
+tab_style(
+  style = list(cell_fill(color = "#fff0ef"),
+  cell_text(weight = "bold")),
+locations = cells_body(columns = Competition)) %>% 
+  
+tab_style(
+  style = cell_text(weight = "bold"),
+  locations = cells_column_labels()
+) %>%
+  tab_options(column_labels.background.color = "red")
+
+
+
+messiTop %>%gt() %>%
+tab_header(title = md("**Lionel Messi**")) %>%
+  
+tab_style(
+  style = list(cell_fill(color = "#b2f7ef"),
+  cell_text(weight = "bold")),
+locations = cells_body(columns = Competition)) %>% 
+  
+tab_style(
+  style = cell_text(weight = "bold"),
+  locations = cells_column_labels()
+) %>%
+  tab_options(column_labels.background.color = "lightblue")
+
+```
+
+#### **Our Weekly Plan**
+
+| Task Name                  | Status  | Assignee | Due      | Priority | Summary                                          |
+|------------|------------|------------|------------|------------|------------|
+| Create the proposal        | Pending |          | 03 April | High     | Create the initial documented proposal           |
+| Create the Git Repo        | Pending |          | 03 April | Moderate | Create a new repository for data                 |
+| Resubmit proposal          | Pending |          | 08 April | High     | Resubmit revised proposal                        |
+| Data wrangling             | Pending |          | 08 April | Moderate | Initial exploration and cleaning of the datasets |
+| Analysis of topic one      | Pending |          | 15 April | Moderate |                                                  |
+| Analysis of topic two      | Pending |          | 22 April | Low      |                                                  |
+| Plotting for topic one     | Pending |          | 29 April | Low      |                                                  |
+| Plotting for topic two     | Pending |          | 29 April | Low      |                                                  |
+| Summarising of information | Pending |          | 01 May   | Low      |                                                  |
+| Write up                   | Pending |          | 06 May   | Low      |                                                  |
+| Presentation               | Pending |          | 06 May   | Low      |                                                  |
+| Final organisation         | Pending |          | 06 May   | Low      |                                                  |
+| Site publishing            | Pending |          | 06 May   | Low      |                                                  |
+| Final submission           | Pending |          | 06 May   | Low      | Final submission of the entire repository        |

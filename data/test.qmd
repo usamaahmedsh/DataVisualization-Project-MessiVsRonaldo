@@ -1,0 +1,415 @@
+---
+title: "Project Title"
+subtitle: "INFO 526 - Project Final"
+author: 
+  - name: "Team name - Team member 1, Team member 2,..."
+    affiliations:
+      - name: "School of Information, University of Arizona"
+description: "Project description"
+format:
+   html:
+    code-tools: true
+    code-overflow: wrap
+    embed-resources: true
+editor: visual
+execute:
+  warning: false
+  echo: false
+---
+
+
+```{r DataWrangling}
+
+
+pacman::p_load(tidyverse, 
+               readr, 
+               stringr,
+               sf, 
+               plotly,
+               data.table)
+
+
+ronaldo <- read_csv("cr7.csv")
+messi <- read_csv("messi.csv")
+
+messi$label <- "Messi"
+ronaldo$label <- "Ronaldo"
+
+df <- rbind(messi,ronaldo)
+
+countries <- data.frame(coun = c('Moreirense FC - Portugal',
+               'Boavista FC - Portugal',
+               'CD Estarreja - Portugal',
+               'FC Oliveira do Hospital - Portugal',
+               'Portsmouth FC - England',
+               'Manchester City - England',
+               'Tottenham Hotspur - England',
+               'Birmingham City - England',
+               'Aston Villa - England',
+               'Millwall FC - England',
+               'Southampton FC - England',
+               'Exeter City - England',
+               'Arsenal FC - England',
+               'Everton FC - England',
+               'Fulham FC - England',
+               'Newcastle United - England',
+               'Debreceni VSC - Hungary',
+               'Middlesbrough FC - England',
+               'West Bromwich Albion - England',
+               'Bolton Wanderers - England',
+               'Wigan Athletic - England',
+               'Charlton Athletic - England',
+               'Reading FC - England',
+               'Watford FC - England',
+               'AS Roma - Italy',
+               'AC Milan - Italy',
+               'Sporting CP - Portugal',
+               'Dynamo Kyiv - Ukraine',
+               'Blackburn Rovers - England',
+               'Derby County - England',
+               'Sunderland AFC - England',
+               'West Ham United - England',
+               'Olympique Lyon - France',
+               'Liverpool FC - England',
+               'Chelsea FC - England',
+               'Hull City - England',
+               'Stoke City - England',
+               'Gamba Osaka - Japan',
+               'FC Internazionale - Italy',
+               'FC Porto - Portugal',
+               'Deportivo de La Coruña - Spain',
+               'RCD Espanyol Barcelona - Spain',
+               'FC Zürich - Switzerland',
+               'Xerez CD - Spain',
+               'Villarreal CF - Spain',
+               'Olympique Marseille - France',
+               'UD Almería - Spain',
+               'Real Zaragoza - Spain',
+               'Malaga CF - Spain',
+               'CD Tenerife - Spain',
+               'Sevilla FC - Spain',
+               'Real Valladolid CF - Spain',
+               'Getafe CF - Spain',
+               'Racing Santander - Spain',
+               'Valencia CF - Spain',
+               'CA Osasuna - Spain',
+               'RCD Mallorca - Spain',
+               'Athletic Bilbao - Spain',
+               'Hercules CF - Spain',
+               'Real Murcia CF - Spain',
+               'Ajax Amsterdam - Netherlands',
+               'AJ Auxerre - France',
+               'Levante UD - Spain',
+               'Atletico de Madrid - Spain',
+               'Real Sociedad - Spain',
+               'FC Barcelona - Spain',
+               'Rayo Vallecano - Spain',
+               'Sporting Gijón - Spain',
+               'SD Ponferradina - Spain',
+               'Granada CF - Spain',
+               'CSKA Moscow - Russia',
+               'Real Betis Balompie - Spain',
+               'APOEL Nicosia - Cyprus',
+               'Bayern Munich - Germany',
+               'Celta de Vigo - Spain',
+               'Borussia Dortmund - Germany',
+               'Manchester United - England',
+               'Galatasaray - Turkey',
+               'Elche CF - Spain',
+               'FC Copenhagen - Denmark',
+               'Juventus FC - Italy',
+               'FC Schalke 04 - Germany',
+               'Córdoba CF - Spain',
+               'FC Basel 1893 - Switzerland',
+               'Ludogorets Razgrad - Bulgaria',
+               'SD Eibar - Spain',
+               'Shakhtar Donetsk - Ukraine',
+               'Malmö FF - Sweden',
+               'UD Las Palmas - Spain',
+               'VfL Wolfsburg - Germany',
+               'Deportivo Alaves - Spain',
+               'CF America - Mexico',
+               'Kashima Antlers - Japan',
+               'Al-Jazira (Abu Dhabi) - United Arab Emirates',
+               'Grêmio Foot-Ball Porto Alegrense - Brazil',
+               'Paris Saint-Germain - France',
+               'Girona FC - Spain',
+               'US Sassuolo - Italy',
+               'Frosinone Calcio - Italy',
+               'Udinese Calcio - Italy',
+               'Genoa CFC - Italy',
+               'Empoli FC - Italy',
+               'SPAL - Italy',
+               'ACF Fiorentina - Italy',
+               'Torino FC - Italy',
+               'Atalanta BC - Italy',
+               'UC Sampdoria - Italy',
+               'SS Lazio - Italy',
+               'Parma Calcio 1913 - Italy',
+               'Inter Milan - Italy',
+               'SSC Napoli - Italy',
+               'Hellas Verona - Italy',
+               'Bayer 04 Leverkusen - Germany',
+               'Bologna FC 1909 - Italy',
+               'Cagliari Calcio - Italy',
+               'US Lecce - Italy',
+               'Spezia Calcio - Italy',
+               'Ferencvarosi TC - Hungary',
+               'FC Crotone - Italy',
+               'BSC Young Boys - Switzerland',
+               'Norwich City - England',
+               'Burnley FC - England',
+               'Brighton & Hove Albion - England',
+               'Brentford FC - England',
+               'FC Sheriff - Moldova',
+               'Albacete Balompie - Spain',
+               'Panathinaikos Athens - Greece',
+               'SV Werder Bremen - Germany',
+               'Real Madrid - Spain',
+               'Recreativo Huelva - Spain',
+               'Deportivo de La Coruña - Spain',
+               'Gimnastic de Tarragona - Spain',
+               'VfB Stuttgart - Germany',
+               'UD Almería - Spain',
+               'Rangers FC - Scotland',
+               'Celtic FC - Scotland',
+               'Benidorm CD - Spain',
+               'CD Numancia - Spain',
+               'Cultural Leonesa - Spain',
+               'CF Atlante - Mexico',
+               'Club Estudiantes de La Plata - Argentina',
+               'Club Atletico de Ceuta - Spain',
+               'BATE Borisov - Belarus',
+               'FC Viktoria Plzen - Czech Republic',
+               'Santos FC - Brazil',
+               'Spartak Moscow - Russia',
+               'CA River Plate - Argentina',
+               'CD Leganes - Spain',
+               'Borussia Mönchengladbach - Germany',
+               'Olympiacos Piraeus - Greece',
+               'SD Huesca - Spain',
+               'PSV Eindhoven - Netherlands',
+               'SK Slavia Prague - Czech Republic',
+               'Cadiz CF - Spain',
+               'RB Leipzig - Germany',
+               'FC Nantes - France',
+               'Club Brugge KV - Belgium',
+               'LOSC Lille - France',
+               'FC Lorient - France',
+               'RC Lens - France',
+               'Montpellier - France',
+               'Clermont Foot - France',
+               'Maccabi Haifa - Israel',
+               'OGC Nice - France',
+               'SL Benfica - Portugal',
+               'AC Ajaccio - France',
+               'ESTAC Troyes - France'
+)) 
+
+
+countries <- separate(countries, coun, into = c("Opponent", "Country"), sep = " - ")
+
+df <- left_join(df, countries, by = "Opponent")
+
+# By Country/Region
+
+by_region <- df |>
+  mutate(Year = paste0("20", str_sub(df$Date, -2, -1)) ) |>
+  filter(Venue == "A" & !is.na(Country) & Year %in% c(paste0("200",05:09),paste0("20",10:22))) |>
+  group_by(Country,label) |>
+  summarise(count = n()) |>
+  arrange(-count)
+
+fix <- df |>
+  mutate(Year = paste0("20", str_sub(df$Date, -2, -1)) ) |>
+  filter(Venue == "H" & !is.na(Country) & Year %in% c(paste0("200",05:09),paste0("20",10:22))) |>
+  group_by(label, Club) |>
+  summarise(count_h = n()) |>
+  arrange(-count_h) |>
+  glimpse()
+
+
+
+by_region <- by_region |>
+  mutate(count = case_when(Country == "Spain" & label == "Messi" ~ count + 383,
+                             Country == "Spain" & label == "Ronaldo" ~ count + 228,
+                             Country == "France" & label == "Messi" ~ count + 14,
+                             Country == "England" & label == "Ronaldo" ~ count + 87,
+                             Country == "Italy" & label == "Ronaldo" ~ count + 57,
+                             TRUE ~ count))
+
+# world_map <- map_data("world")
+
+# world_map_2 <- world_map |>
+#   mutate(region = ifelse(region == "UK","England",region)) |>
+#   group_by(region) |>
+#   summarise(lat = round(mean(lat),1),
+#             long = round(mean(long),1))
+# 
+# world_map_2 <- subset(world_map_2, region %in% by_region$Country)
+# 
+# by_region <- left_join(by_region, world_map_2, by = c("Country" = "region"))
+# 
+# by_region <- subset(by_region, !is.na(by_region$lat))
+
+
+# map_plot <- ggplot(by_region, aes(fill = label, map_id = Country)) +
+#   geom_map(data = world_map, map = world_map,
+#            aes(long, lat, map_id = region),
+#            fill = "gray90", color = "black", linewidth = 0.1) +
+#    geom_point(aes(color = label, size = count_a, x = long, y = lat)) +
+#   coord_fixed(1.3) +
+#   theme_minimal() +
+#   theme_void() +
+#   scale_fill_manual(values = c("Ronaldo" = "blue", "Messi" = "red")) +
+#   labs(title = "Total Goals by Ronaldo and Messi per Country") +
+#   theme(plot.title = element_text(hjust = 0.5)) 
+# 
+# map_plot
+
+## Function to calculate goals
+
+calculate_goals <- function(df,col){
+  
+  x <- df |>
+  mutate(Year = paste0("20", str_sub(df$Date, -2, -1)) ) |>
+  filter(!is.na(Country) & Year %in% c(paste0("200",05:09),paste0("20",10:22))) |>
+  group_by(.data[[col]],label) |>
+  summarise(count = n()) |>
+  arrange(-count)
+  
+  # name <- names(x)[which(names(x) == col)]
+  # 
+  # names(x)[which(names(x) == "count_a")] <- paste0("count_", tolower(name))
+  
+  return(x)
+  
+}
+
+## By Opponent
+
+by_opponent <- calculate_goals(df,'Opponent') 
+
+## By Competition
+
+by_competition <- calculate_goals(df,'Competition') 
+
+## By Matchday
+
+by_matchday <- calculate_goals(df,'Matchday') 
+
+## By Last Minute Goals
+  
+by_lastminute <- calculate_goals(df,'Minute')
+
+by_lastminute <- by_lastminute |>
+  mutate(Minute = case_when(grepl("^9|^10|^11|^12|^13",Minute) ~ ">90",
+                            grepl("^8",Minute) ~ ">80",
+                            grepl("^7",Minute) ~ ">70",
+                            grepl("^6",Minute) ~ ">60",
+                            grepl("^5",Minute) ~ ">50",
+                            grepl("^4",Minute) ~ ">40",
+                            grepl("^3",Minute) ~ ">30",
+                            grepl("^2",Minute) ~ ">20",
+                            TRUE ~ "<10")) |>
+  group_by(Minute,label) |>
+  summarise(count = n()) 
+
+##################################################
+
+## Dropdown filters
+
+filter_region <- c("Spain","England","France","Germany","Italy")
+filter_competition <- c('LaLiga','UEFA Champions League','Copa del Rey')
+filter_opponent <- c("Real Madrid", "FC Barcelona", "Manchester United", "Bayern Munich", "Liverpool FC", "Chelsea FC", "Juventus FC", "Paris Saint-Germain", "Arsenal FC", "Borussia Dortmund")
+filter_matchday <- c('Quarter-Finals','Semi-Finals','Final')
+filter_minute <- c(">90",">80")
+
+
+## Make a combined data frame
+
+by_region <- by_region |> rename(plot_filter = Country) |> mutate(val = "Region")
+by_competition <- by_competition |> rename(plot_filter = Competition) |> mutate(val = "Competition")
+by_lastminute <- by_lastminute |> rename(plot_filter = Minute) |> mutate(val = "Goal Time")
+by_opponent <- by_opponent |> rename(plot_filter = Opponent) |> mutate(val = "Opponent")
+by_matchday <- by_matchday |> rename(plot_filter = Matchday) |> mutate(val = "Matchday")
+
+combined_df <- rbind(by_region,by_competition,by_lastminute,by_matchday,by_opponent)
+
+
+
+
+##################################################
+
+## Plot Function
+
+
+plotter <- function(filter, df) {
+
+b <- ggplot(combined_df |>
+                     filter(plot_filter == filter), aes(x = plot_filter,
+                                    y = count,
+                                    fill = label)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = filter,
+       x = "", y = "Number of Goals", fill = "Player") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_blank(),
+        panel.grid.minor = element_blank()) +
+  scale_fill_manual(values = c("Ronaldo" = "blue", "Messi" = "red"))
+
+return(print(b))
+
+}
+
+filter_region <- c("Spain","England","France","Germany","Italy")
+
+plotter <- function(filter, df) {
+
+b <- ggplot(combined_df |>
+                     filter(plot_filter == filter), aes(x = plot_filter,
+                                    y = count,
+                                    fill = label)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = filter,
+       x = "", y = "Number of Goals", fill = "Player") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_blank(),
+        panel.grid.minor = element_blank()) +
+  scale_fill_manual(values = c("Ronaldo" = "blue", "Messi" = "red"))
+
+return(print(b))
+}
+
+for (i in filter_region){
+    plotter(i,combined_df)
+}
+
+
+
+```
+
+
+
+### Country {.tabset .tabset-dropdown}
+
+```{r , echo=FALSE, warning=FALSE, results="asis"}
+
+
+  cat("####","Country","{.tabset .tabset-dropdown} ","\n")
+  for (i in filter_region){
+    cat("#####",i,"<br>","\n\n")
+    f <- plotter(i, combined_df)
+    print(f)
+    cat("\n\n")
+  }
+
+
+  
+
+```
+
+
+

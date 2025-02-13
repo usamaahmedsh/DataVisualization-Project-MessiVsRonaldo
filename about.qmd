@@ -1,0 +1,19 @@
+---
+title: "About"
+format: html
+editor: visual
+---
+
+This project was developed by **\[Graphical Geniuses\]** For [INFO 526 - Data Analysis & Visualization](https://datavizaz.org/) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.
+
+-   Mobolaji Adewale: MS in Information Science (HCC)
+
+-   Narasimha Vardhan Rachaputi: MS in Data Science
+
+-   Pradnya Raut: MS in Information Science (ML)
+
+-   Praveen Kumar Pappala: MS in Data Science
+
+-   Tushar Kant Singh: MS in Information Science (ML)
+
+-   Usama Ahmed: MS in Data Science
